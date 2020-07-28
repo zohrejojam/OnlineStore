@@ -32,7 +32,7 @@ namespace OnlineStore.Models
         [Required]
         [Display(Name = "شماره فاکتور")]
         [DisplayName("شماره فاکتور")]
-        [MaxLength(50)]
+        [MaxLength(100)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string InputInvoiceNumber { get; set; }
     }
