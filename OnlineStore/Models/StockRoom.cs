@@ -8,11 +8,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineStore.Models
 {
-    public class StockRoom
+    public class StoreHouse
     {
         [Key]
-        [Required]
-        public int StockRoomId { get; set; }
+        public int StoreHouseId { get; set; }
 
         [Required]
         public int MaterialId { get; set; }

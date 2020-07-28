@@ -11,7 +11,6 @@ namespace OnlineStore.Models
     public class AccountingDocument
     {
         [Key]
-        [Required]
         public int AccountingDocumentId { get; set; }
 
         [Required]

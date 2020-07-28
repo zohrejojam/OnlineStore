@@ -11,7 +11,6 @@ namespace OnlineStore.Models
     public class SalesInvoice
     {
         [Key]
-        [Required]
         public int SalesInvoiceId { get; set; }
 
         [Required]

@@ -5,13 +5,14 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
+using OnlineStore.IServices;
+using OnlineStore.DataLayer;
 
 namespace OnlineStore.Models
 {
-    public class Material
+    public class Material:IMaterial
     {
         [Key]
-        [Required]
         public int MaterialId { get; set; }
         [Required]
         [Display(Name = "کد کالا")]
@@ -35,5 +36,22 @@ namespace OnlineStore.Models
         [Display(Name = "حداقل موجودی")]
         [DisplayName("حداقل موجودی")]
         public int MinInventory { get; set; }
+
+
+        #region Unique MaterialCode and TiltleInGroup
+        private DataBaseContext db = new DataBaseContext();
+        public bool IsUniqueMaterialCode(string materialCode)
+        {
+            //یکتا بودن کد کالا
+          return  db.Materials.Any(p => p.MaterialCode == materialCode);
+        }
+
+        public bool IsUniqueMaterialTitleInGroup(string materialtitle,int materialGroupId)
+        {
+            //یکتا بودن عنوان کالا در هر گروه
+           return db.Materials.Any(p => p.MaterialGroupId == materialGroupId &&
+                                         p.MaterialTitle == materialtitle);
+        }
+        #endregion
     }
 }

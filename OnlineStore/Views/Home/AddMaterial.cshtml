@@ -1,0 +1,50 @@
+﻿<h2>Add New Material</h2>
+
+<dl class="dl-horizontal">
+    <dt>کد کالا : </dt>
+    <dd>
+        <input type="text" id="txtCode" class="form-control" placeholder="کد ..." />
+    </dd>
+
+    <dt>عنوان کالا : </dt>
+    <dd>
+        <input type="text" id="txtTitle" class="form-control" placeholder="عنوان ..." />
+    </dd>
+
+    <dt>گروه کالا : </dt>
+    <dd>
+        <input type="text" id="txtMaterialGroup" class="form-control" placeholder="گروه کالا ..." />
+        @*@Html.DropDownList("MaterialGroupId", null, "--Select One Item--", htmlAttributes: new { @class = "form-control", required = "required" })*@
+    </dd>
+
+
+    <dt>حداقل موجودی : </dt>
+    <dd>
+        <input type="number" id="txtMinInven" class="form-control" placeholder="حداقل موجودی ..." />
+    </dd>
+
+    <dt></dt>
+    <dd>
+        <input type="button" class="btn btn-success" value="Save" id="btnSave" />
+    </dd>
+</dl>
+
+
+<script>
+    $("#btnSave").click(function() {
+        var material = {
+            MaterialCode: $("#txtCode").val(),
+            MaterialTitle: $("#txtTitle").val(),
+            MaterialGroupId: $("#txtMaterialGroup").val(),
+            MinInventory: $("#txtMinInven").val()
+        }
+
+        $.ajax({
+            url: "/Api/Materials",
+            type: "Post",
+            data: material
+        }).done(function() {
+            $("#view").load("/Home/ListMaterial");
+        });
+    });
+</script>

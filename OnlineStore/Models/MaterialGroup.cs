@@ -11,7 +11,6 @@ namespace OnlineStore.Models
     public class MaterialGroup
     {
         [Key]
-        [Required]
         public int MaterialGroupId { get; set; }
 
         [Required]
