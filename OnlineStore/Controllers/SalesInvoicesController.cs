@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using OnlineStore.DataLayer;
@@ -35,9 +30,18 @@ namespace OnlineStore.Controllers
                 }
                 try
                 {
+                    int minInventory = 0;
+                    //بدست آوردن حداقل موجودی برای این کالا
+                    StoreHouse currentStoreHouse = db.StoreHouses.FirstOrDefault(p => p.StoreHouseId == salesInvoice.StoreHouseId);
+                    if (currentStoreHouse != null)
+                    {
+                        Material currentMaterial = db.Materials.FirstOrDefault(p => p.MaterialId == currentStoreHouse.MaterialId);
+                        minInventory = currentMaterial != null ? currentMaterial.MinInventory : 0;
+                    }
+                    
                     //تعداد کالا بیشتر از حداقل موجودی نباشد
-                    if (salesInvoice.Number <= 0 ||
-                        salesInvoice.Number > salesInvoice.StoreHouse.Material.MinInventory)
+                    if (salesInvoice.Count <= 0 ||
+                        salesInvoice.Count > minInventory)
                         return BadRequest(Messages.MaterialNumberMustBeMoreThanMinInventory);
 
 
@@ -46,23 +50,23 @@ namespace OnlineStore.Controllers
 
                     #region Decrease Material Number
                     //کسر کردن تعداد کالای فروخته شده از انبار
-                    bool decreeseSuccessed = this.DecreaseMaterialCount(salesInvoice.StoreHouseId, salesInvoice.Number);
+                    bool decreeseSuccessed = this.DecreaseMaterialCount(salesInvoice.StoreHouseId, salesInvoice.Count);
                     if (!decreeseSuccessed)
                     {
                         transScope.Dispose();
-                        return BadRequest(Messages.ErrorOccured);
+                        return BadRequest(Messages.DecreseMaterialError);
                     }
                     #endregion
 
                     #region Save Accounting Document Automatically
                     //ثبت سند حسابداری
                     bool createDocumentSeccessed = this.RegitrationAccountingDocument(salesInvoice.Date,
-                        salesInvoice.Amount, salesInvoice.Number, salesInvoice.SalesInvoiceId);
+                        salesInvoice.Amount, salesInvoice.Count, salesInvoice.SalesInvoiceId);
 
                     if (!createDocumentSeccessed)
                     {
                         transScope.Dispose();
-                        return BadRequest(Messages.ErrorOccured);
+                        return BadRequest(Messages.AccountingDocumentError);
                     }
                     #endregion
 
@@ -99,9 +103,9 @@ namespace OnlineStore.Controllers
             try
             {
                 StoreHouse currentStoreHouse = db.StoreHouses.Find(storeHouseId);
-                if (currentStoreHouse.Number > 0)
+                if (currentStoreHouse.Count > 0)
                 {
-                    currentStoreHouse.Number -= salesInvoiceNumber;
+                    currentStoreHouse.Count -= salesInvoiceNumber;
                     db.Entry(currentStoreHouse).State = EntityState.Modified;
                 }
                 db.SaveChanges();

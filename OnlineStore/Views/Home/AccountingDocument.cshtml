@@ -14,15 +14,31 @@
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $.getJSON("/Api/StoreHouse", function (res) {
-        $.each(res, function (key, val) {
-            var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupName + "</td><td>" + val.MinInventory + "</td><td>" + val.Number + "</td><td>" + val.Status + "</td></tr>";
-            $("#list").append(item);
+    //$.getJSON("/Api/AccountingDocuments", function (res) {
+    //    debugger;
+    //    $.each(res, function (key, val) {
+    //        var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupName + "</td><td>" + val.MinInventory + "</td><td>" + val.Number + "</td><td>" + val.Status + "</td></tr>";
+    //        $("#list").append(item);
 
+    //    });
+    //});
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Api/AccountingDocuments/",
+            type: "Get",
+            dataType: "JSON",
+            data: { page: 1, count: 1, filterStr: "یک", SortcolumnName:"MaterialCode,Count_desc"},
+            success: function (response) {
+                debugger;
+                $.each(response, function (key, val) {
+                    var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupName + "</td><td>" + val.MinInventory + "</td><td>" + val.Count + "</td><td>" + val.Status + "</td></tr>";
+                    $("#list").append(item);
+
+                });
+            }
         });
     });
-
-
 
 </script>
 

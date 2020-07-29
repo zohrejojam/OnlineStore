@@ -1,4 +1,16 @@
-﻿<h2>Add New Material</h2>
+﻿<h2>Add New Material Group</h2>
+<dl class="dl-horizontal">
+    <dt>نام گروه کالا : </dt>
+    <dd>
+        <input type="text" id="NameGroup" class="form-control" placeholder="نام گروه کالا ..." />
+    </dd>
+
+    <dt></dt>
+    <dd>
+        <input type="button" class="btn btn-success" value="Save0" id="btnSave0" />
+    </dd>
+</dl>
+
 
 <dl class="dl-horizontal">
     <dt>کد کالا : </dt>
@@ -39,12 +51,12 @@
 
     <dt>number : </dt>
     <dd>
-        <input type="number" id="number" class="form-control"  />
+        <input type="number" id="number" class="form-control" />
     </dd>
 
     <dt>date : </dt>
     <dd>
-        <input type="datetime" id="date" class="form-control"  />
+        <input type="datetime" id="date" class="form-control" />
     </dd>
 
 
@@ -55,13 +67,90 @@
 
     <dt></dt>
     <dd>
-        <input type="button" class="btn btn-success" value="Save" id="btnSave1" />
+        <input type="button" class="btn btn-success" value="Save1" id="btnSave1" />
+    </dd>
+</dl>
+
+<h2>فروش کالا</h2>
+<dl class="dl-horizontal">
+    <dt>StoreHouseId : </dt>
+    <dd>
+        <input type="text" id="StoreHouseId" class="form-control" />
+    </dd>
+
+    <dt>number : </dt>
+    <dd>
+        <input type="number" id="number2" class="form-control" />
+    </dd>
+
+    <dt>date : </dt>
+    <dd>
+        <input type="datetime" id="date2" class="form-control" />
+    </dd>
+
+
+    <dt>OutputInvoiceNumber : </dt>
+    <dd>
+        <input type="text" id="OutputInvoiceNumber" class="form-control" />
+    </dd>
+
+    <dt>CustomerName : </dt>
+    <dd>
+        <input type="text" id="CustomerName" class="form-control" />
+    </dd>
+
+    <dt>Amount : </dt>
+    <dd>
+        <input type="text" id="Amount" class="form-control" />
+    </dd>
+
+    <dt></dt>
+    <dd>
+        <input type="button" class="btn btn-success" value="Save2" id="btnSave2" />
     </dd>
 </dl>
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $("#btnSave").click(function() {
+    $("#btnSave0").click(function () {
+        var materialGroup = {
+            MaterialGroupName: $("#NameGroup").val(),
+        }
+
+        $.ajax({
+            url: "/Api/MaterialGroups",
+            type: "Post",
+            data: materialGroup
+        }).done(function () {
+            alert('done honey');
+        });
+    });
+
+
+
+    $("#btnSave2").click(function () {
+        debugger;
+        var salesInvoice = {
+            StoreHouseId: $("#StoreHouseId").val(),
+            Count: $("#number2").val(),
+            Date: $("#date2").val(),
+            OutputInvoiceNumber: $("#OutputInvoiceNumber").val(),
+            CustomerName: $("#CustomerName").val(),
+            Amount: $("#Amount").val()
+        }
+
+        $.ajax({
+            url: "/Api/SalesInvoices",
+            type: "Post",
+            data: salesInvoice
+        }).done(function () {
+            alert('done honey');
+        });
+    });
+
+
+
+    $("#btnSave").click(function () {
         var material = {
             MaterialCode: $("#txtCode").val(),
             MaterialTitle: $("#txtTitle").val(),
@@ -73,15 +162,16 @@
             url: "/Api/Materials",
             type: "Post",
             data: material
-        }).done(function() {
+        }).done(function () {
             $("#view").load("/Home/ListMaterial");
         });
     });
 
     $("#btnSave1").click(function () {
-        var material = {
+        debugger;
+        var storeHouse = {
             MaterialId: $("#materialId").val(),
-            Number: $("#number").val(),
+            Count: $("#number").val(),
             Date: $("#date").val(),
             InputInvoiceNumber: $("#inputInvoiceNumber").val()
         }
@@ -89,7 +179,7 @@
         $.ajax({
             url: "/Api/StoreHouse",
             type: "Post",
-            data: material
+            data: storeHouse
         }).done(function () {
             $("#view").load("/Home/ListMaterial");
         });

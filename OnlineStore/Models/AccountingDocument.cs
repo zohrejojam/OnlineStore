@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using OnlineStore.IServices;
 
 namespace OnlineStore.Models
@@ -45,11 +41,12 @@ namespace OnlineStore.Models
 
     public class ListOfMaterial
     {
+        public int MaterialId { get; set; }
         public string MaterialCode { get; set; }
         public string MaterialTitle { get; set; }
         public string MaterialGroupName { get; set; }
         public int MinInventory { get; set; }
-        public int Number { get; set; }
+        public int Count { get; set; }
         public string Status { get; set; }
     }
 }

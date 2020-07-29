@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,7 +19,7 @@ namespace OnlineStore.Models
         [Required]
         [Display(Name = "تعداد")]
         [DisplayName("تعداد")]
-        public int Number { get; set; }
+        public int Count { get; set; }
 
         [Required]
         [Display(Name = "تاریخ")]

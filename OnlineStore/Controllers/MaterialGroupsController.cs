@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
 using OnlineStore.DataLayer;
@@ -23,6 +16,23 @@ namespace OnlineStore.Controllers
             return db.MaterialGroups;
         }
 
+      
+        // POST: api/MaterialGroups
+        [ResponseType(typeof(MaterialGroup))]
+        public IHttpActionResult AddMaterialGroup(MaterialGroup materialGroup)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.MaterialGroups.Add(materialGroup);
+            db.SaveChanges();
+
+            return CreatedAtRoute("DefaultApi", new { id = materialGroup.MaterialGroupId }, materialGroup);
+        }
+
      
+
     }
 }

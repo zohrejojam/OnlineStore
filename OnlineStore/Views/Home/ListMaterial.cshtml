@@ -9,9 +9,10 @@
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $.getJSON("/Api/StoreHouse", function (res) {
+    $.getJSON("/Api/StoreHouse/GetStoreHouses", function (res) {
+        debugger;
         $.each(res, function (key, val) {
-            var item = "<tr><td>" + val.materialId + "</td><td>" + val.number + "</td><td>" + val.date + "</td><td>" + val.inputInvoiceNumber + "</td></tr>";
+            var item = "<tr><td>" + val.MaterialId + "</td><td>" + val.Count + "</td><td>" + val.Date + "</td><td>" + val.InputInvoiceNumber + "</td></tr>";
             $("#list").append(item);
 
         });

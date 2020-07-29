@@ -16,7 +16,7 @@ namespace OnlineStore.DataLayer
 
         //static DataBaseContext()
         //{
-        //    Database.SetInitializer(new CreateDatabaseIfNotExists<DataBaseContext>());
+        //    Database.SetInitializer(new DropCreateDatabaseIfModelChanges<DataBaseContext>());
         //}
 
 
