@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace OnlineStore.Models
 {
     public class SalesInvoice
@@ -14,14 +15,14 @@ namespace OnlineStore.Models
         public int SalesInvoiceId { get; set; }
 
         [Required]
-        public int MaterialId { get; set; }
-        [ForeignKey("MaterialId")]
-        public virtual Material Material { get; set; }
+        public int StoreHouseId { get; set; }
+        [ForeignKey("StoreHouseId")]
+        public virtual StoreHouse StoreHouse { get; set; }
 
         [Required]
         [Display(Name = "تعداد")]
         [DisplayName("تعداد")]
-        public long Number { get; set; }
+        public int Number { get; set; }
 
         [Required]
         [Display(Name = "تاریخ")]
@@ -47,5 +48,7 @@ namespace OnlineStore.Models
         [Display(Name = "مبلغ")]
         [DisplayName("مبلغ")]
         public decimal Amount { get; set; }
+
+       
     }
 }

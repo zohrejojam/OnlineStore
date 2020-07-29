@@ -30,6 +30,36 @@
 </dl>
 
 
+<h2>ثبت ورود کالا</h2>
+<dl class="dl-horizontal">
+    <dt>materialId : </dt>
+    <dd>
+        <input type="text" id="materialId" class="form-control" />
+    </dd>
+
+    <dt>number : </dt>
+    <dd>
+        <input type="number" id="number" class="form-control"  />
+    </dd>
+
+    <dt>date : </dt>
+    <dd>
+        <input type="datetime" id="date" class="form-control"  />
+    </dd>
+
+
+    <dt>inputInvoiceNumber : </dt>
+    <dd>
+        <input type="text" id="inputInvoiceNumber" class="form-control" />
+    </dd>
+
+    <dt></dt>
+    <dd>
+        <input type="button" class="btn btn-success" value="Save" id="btnSave1" />
+    </dd>
+</dl>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
     $("#btnSave").click(function() {
         var material = {
@@ -44,6 +74,23 @@
             type: "Post",
             data: material
         }).done(function() {
+            $("#view").load("/Home/ListMaterial");
+        });
+    });
+
+    $("#btnSave1").click(function () {
+        var material = {
+            MaterialId: $("#materialId").val(),
+            Number: $("#number").val(),
+            Date: $("#date").val(),
+            InputInvoiceNumber: $("#inputInvoiceNumber").val()
+        }
+
+        $.ajax({
+            url: "/Api/StoreHouse",
+            type: "Post",
+            data: material
+        }).done(function () {
             $("#view").load("/Home/ListMaterial");
         });
     });

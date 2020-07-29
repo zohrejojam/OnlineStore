@@ -21,7 +21,7 @@ namespace OnlineStore.Models
         [Required]
         [Display(Name = "تعداد")]
         [DisplayName("تعداد")]
-        public long Number { get; set; }
+        public int Number { get; set; }
 
         [Required]
         [Display(Name = "تاریخ")]

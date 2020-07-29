@@ -19,7 +19,7 @@ namespace OnlineStore.Controllers
             return PartialView();
         }
 
-        public ActionResult ListMaterial()
+        public ActionResult AccountingDocument()
         {
             return PartialView();
         }

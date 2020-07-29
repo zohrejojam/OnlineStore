@@ -1,22 +1,21 @@
 ﻿<table class="table table-bordered" id="list">
-    <tr class="table-bordered">
-        <th>Code</th>
-        <th>Title</th>
-        <th>MaterialGroup</th>
-        <th>Min Inventory</th>
-        <th>Command</th>
+    <tr>
+        <th>materialId</th>
+        <th>number</th>
+        <th>date</th>
+        <th>inputInvoiceNumber</th>
     </tr>
 </table>
 
-
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script>
-    $.getJSON("/Api/Materials", function(res) {
-        $.each(res, function(key, val) {
-            var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupId + "</td><td>" + val.MinInventory  + "</td></tr>";
+    $.getJSON("/Api/StoreHouse", function (res) {
+        $.each(res, function (key, val) {
+            var item = "<tr><td>" + val.materialId + "</td><td>" + val.number + "</td><td>" + val.date + "</td><td>" + val.inputInvoiceNumber + "</td></tr>";
             $("#list").append(item);
 
         });
-    })
+    });
 
 
 
