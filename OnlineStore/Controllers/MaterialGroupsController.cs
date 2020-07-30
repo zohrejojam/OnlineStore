@@ -25,11 +25,20 @@ namespace OnlineStore.Controllers
             {
                 return BadRequest(ModelState);
             }
+            try
+            {
+                db.MaterialGroups.Add(materialGroup);
+                db.SaveChanges();
 
-            db.MaterialGroups.Add(materialGroup);
-            db.SaveChanges();
+                return CreatedAtRoute("DefaultApi", new { id = materialGroup.MaterialGroupId }, materialGroup);
+            }
+            catch (System.Exception)
+            {
 
-            return CreatedAtRoute("DefaultApi", new { id = materialGroup.MaterialGroupId }, materialGroup);
+                return BadRequest(ModelState);
+            }
+
+        
         }
 
      

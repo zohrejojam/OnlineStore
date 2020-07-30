@@ -23,28 +23,37 @@ namespace OnlineStore.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //validation
-            #region Uniqe Material Code
-            bool isExistCode =material.IsUniqueMaterialCode(material.MaterialCode); 
-            if (isExistCode)
+            try
             {
-                return BadRequest(Messages.MaterialCodeMustBeUniqe);
-            }
-            #endregion
+                //validation
+                #region Uniqe Material Code
+                bool isExistCode = material.IsUniqueMaterialCode(material.MaterialCode);
+                if (isExistCode)
+                {
+                    return BadRequest(Messages.MaterialCodeMustBeUniqe);
+                }
+                #endregion
 
-            #region Uniqe Material Title In Group
-            bool isExistTitleInGroup = material.IsUniqueMaterialTitleInGroup(material.MaterialTitle, material.MaterialGroupId);
-            if (isExistTitleInGroup)
+                #region Uniqe Material Title In Group
+                bool isExistTitleInGroup = material.IsUniqueMaterialTitleInGroup(material.MaterialTitle, material.MaterialGroupId);
+                if (isExistTitleInGroup)
+                {
+                    return BadRequest(Messages.MaterialTitleInGroupMustBeUniqe);
+
+                }
+                #endregion
+
+                db.Materials.Add(material);
+                db.SaveChanges();
+
+                return CreatedAtRoute("DefaultApi", new { id = material.MaterialId }, material);
+            }
+            catch (System.Exception)
             {
-                return BadRequest(Messages.MaterialTitleInGroupMustBeUniqe);
-              
+                return BadRequest(ModelState);
             }
-            #endregion
-
-            db.Materials.Add(material);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = material.MaterialId }, material);
+           
+           
         }
 
        

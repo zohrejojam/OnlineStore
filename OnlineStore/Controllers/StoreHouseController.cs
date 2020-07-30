@@ -30,6 +30,10 @@ namespace OnlineStore.Controllers
         [ResponseType(typeof(StoreHouse))]
         public IHttpActionResult RegistrationMaterialIntoStoreHouse(StoreHouse storeHouse)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 db.StoreHouses.Add(storeHouse);

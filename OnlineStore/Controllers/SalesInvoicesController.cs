@@ -103,7 +103,10 @@ namespace OnlineStore.Controllers
             try
             {
                 StoreHouse currentStoreHouse = db.StoreHouses.Find(storeHouseId);
-                if (currentStoreHouse.Count > 0)
+                //اگر کالای موجود در انبار کمتر از مقدار سفارش باشد
+                if (currentStoreHouse.Count < salesInvoiceNumber)
+                    return false;
+                if (currentStoreHouse.Count > 0 && currentStoreHouse.Count > salesInvoiceNumber)
                 {
                     currentStoreHouse.Count -= salesInvoiceNumber;
                     db.Entry(currentStoreHouse).State = EntityState.Modified;
