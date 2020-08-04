@@ -1,54 +1,53 @@
 ﻿using System;
-using System.Data.Entity;
+using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Description;
-using OnlineStore.DataLayer;
-using OnlineStore.Models;
+using System.Threading.Tasks;
 using System.Transactions;
+using Microsoft.EntityFrameworkCore;
+using OnlineStoreCore.DataLayer;
+using OnlineStoreCore.Models;
 
-namespace OnlineStore.Controllers
+namespace OnlineStoreCore.Services
 {
-    public class SalesInvoicesController : ApiController
+    public class SalesInvoiceService
     {
-        private DataBaseContext db = new DataBaseContext();
-        private bool createDocumentSeccessed;
+        private DataBaseContext DbContext;
+        private AccountingDocumentService _documentService;
+        public SalesInvoiceService(DataBaseContext context,AccountingDocumentService documentService)
+        {
+            DbContext = context;
+            _documentService = documentService;
+        }
 
         /// <summary>
         /// فروش کالا و ثبت فاکتور فروش
         /// </summary>
         /// <param name="salesInvoice"></param>
         /// <returns></returns>
-        // POST: api/SalesInvoices
-        [ResponseType(typeof(SalesInvoice))]
-        public IHttpActionResult CreateSalesInvoice(SalesInvoice salesInvoice)
+       
+        public void CreateSalesInvoice(SalesInvoice salesInvoice)
         {
             using (TransactionScope transScope = new TransactionScope())
             {
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
                 try
                 {
                     int minInventory = 0;
                     //بدست آوردن حداقل موجودی برای این کالا
-                    StoreHouse currentStoreHouse = db.StoreHouses.FirstOrDefault(p => p.StoreHouseId == salesInvoice.StoreHouseId);
+                    StoreHouse currentStoreHouse = DbContext.StoreHouses.FirstOrDefault(p => p.StoreHouseId == salesInvoice.StoreHouseId);
                     if (currentStoreHouse != null)
                     {
-                        Material currentMaterial = db.Materials.FirstOrDefault(p => p.MaterialId == currentStoreHouse.MaterialId);
+                        Material currentMaterial = DbContext.Materials.FirstOrDefault(p => p.MaterialId == currentStoreHouse.MaterialId);
                         minInventory = currentMaterial != null ? currentMaterial.MinInventory : 0;
                     }
-                    
+
                     //تعداد کالا بیشتر از حداقل موجودی نباشد
                     if (salesInvoice.Count <= 0 ||
                         salesInvoice.Count > minInventory)
-                        return BadRequest(Messages.MaterialNumberMustBeMoreThanMinInventory);
+                        throw new Exception(Messages.MaterialNumberMustBeMoreThanMinInventory);
 
 
-                    db.SalesInvoices.Add(salesInvoice);
-                    db.SaveChanges();
+                    DbContext.SalesInvoices.Add(salesInvoice);
+                    DbContext.SaveChanges();
 
                     #region Decrease Material Number
                     //کسر کردن تعداد کالای فروخته شده از انبار
@@ -56,7 +55,7 @@ namespace OnlineStore.Controllers
                     if (!decreeseSuccessed)
                     {
                         transScope.Dispose();
-                        return BadRequest(Messages.DecreseMaterialError);
+                        throw new Exception(Messages.DecreseMaterialError);
                     }
                     #endregion
 
@@ -65,20 +64,19 @@ namespace OnlineStore.Controllers
                     bool createDocumentSuccessed = this.RegistrationAccountingDocument(salesInvoice.Date,
                         salesInvoice.Amount, salesInvoice.Count, salesInvoice.SalesInvoiceId);
 
-                    if (!createDocumentSeccessed)
+                    if (!createDocumentSuccessed)
                     {
                         transScope.Dispose();
-                        return BadRequest(Messages.AccountingDocumentError);
+                        throw new Exception(Messages.AccountingDocumentError);
                     }
                     #endregion
 
                     transScope.Complete();
-                    return CreatedAtRoute("DefaultApi", new { id = salesInvoice.SalesInvoiceId }, salesInvoice);
                 }
                 catch (TransactionException e)
                 {
                     transScope.Dispose();
-                    return BadRequest(Messages.ErrorOccured);
+                    throw new Exception(Messages.ErrorOccured);
 
                 }
             }
@@ -91,7 +89,7 @@ namespace OnlineStore.Controllers
         // GET: api/SalesInvoices
         public IQueryable<SalesInvoice> GetSalesInvoices()
         {
-            return db.SalesInvoices;
+            return DbContext.SalesInvoices;
         }
 
         /// <summary>
@@ -104,16 +102,16 @@ namespace OnlineStore.Controllers
         {
             try
             {
-                StoreHouse currentStoreHouse = db.StoreHouses.Find(storeHouseId);
+                StoreHouse currentStoreHouse = DbContext.StoreHouses.Find(storeHouseId);
                 //اگر کالای موجود در انبار کمتر از مقدار سفارش باشد
                 if (currentStoreHouse.Count < salesInvoiceNumber)
                     return false;
                 if (currentStoreHouse.Count > 0 && currentStoreHouse.Count > salesInvoiceNumber)
                 {
                     currentStoreHouse.Count -= salesInvoiceNumber;
-                    db.Entry(currentStoreHouse).State = EntityState.Modified;
+                    DbContext.Entry(currentStoreHouse).State = EntityState.Modified;
                 }
-                db.SaveChanges();
+                DbContext.SaveChanges();
                 return true;
             }
             catch (Exception)
@@ -136,12 +134,12 @@ namespace OnlineStore.Controllers
             {
                 AccountingDocument obj = new AccountingDocument();
                 obj.DocumentDate = date;
-                obj.DocumentNumber = obj.CreateDocumentNumber();//شماره سند
+                obj.DocumentNumber = _documentService.CreateDocumentNumber();//شماره سند
                 obj.Amount = salesInvoiceAmount * salesInvoiceNumber;
                 obj.SalesInvoiceId = salesInvoiceId;
-                
-                db.AccountingDocuments.Add(obj);
-                db.SaveChanges();
+
+                DbContext.AccountingDocuments.Add(obj);
+                DbContext.SaveChanges();
                 return true;
             }
             catch (Exception)

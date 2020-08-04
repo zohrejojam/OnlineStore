@@ -2,12 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
-using OnlineStore.IServices;
-using OnlineStore.DataLayer;
 
-namespace OnlineStore.Models
+
+namespace OnlineStoreCore.Models
 {
-    public class Material:IMaterial
+    public class Material
     {
         [Key]
         public int MaterialId { get; set; }
@@ -35,23 +34,7 @@ namespace OnlineStore.Models
         public int MinInventory { get; set; }
 
 
-        #region Unique MaterialCode and TiltleInGroup
-
-        private DataBaseContext db = new DataBaseContext();
-
-        public bool IsUniqueMaterialCode(string materialCode)
-        {
-            //یکتا بودن کد کالا
-            return  db.Materials.Any(p => p.MaterialCode == materialCode);
-        }
-
-        public bool IsUniqueMaterialTitleInGroup(string materialtitle,int materialGroupId)
-        {
-            //یکتا بودن عنوان کالا در هر گروه
-           return db.Materials.Any(p => p.MaterialGroupId == materialGroupId &&
-                                         p.MaterialTitle == materialtitle);
-        }
-        #endregion
+       
     }
 
    

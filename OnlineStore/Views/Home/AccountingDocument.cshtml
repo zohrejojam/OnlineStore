@@ -1,0 +1,44 @@
+﻿
+
+
+<table class="table table-bordered" id="list">
+    <tr>
+        <th>MaterialCode</th>
+        <th>MaterialTitle</th>
+        <th>MaterialGroupName</th>
+        <th>MinInventory</th>
+        <th>Number</th>
+        <th>Status</th>
+    </tr>
+</table>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    //$.getJSON("/Api/AccountingDocuments", function (res) {
+    //    debugger;
+    //    $.each(res, function (key, val) {
+    //        var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupName + "</td><td>" + val.MinInventory + "</td><td>" + val.Number + "</td><td>" + val.Status + "</td></tr>";
+    //        $("#list").append(item);
+
+    //    });
+    //});
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Api/AccountingDocuments/",
+            type: "Get",
+            dataType: "JSON",
+            data: { page: 1, count: 4, filterStr: "", SortcolumnName:"MaterialCode,Count_desc"},
+            success: function (response) {
+                debugger;
+                $.each(response, function (key, val) {
+                    var item = "<tr><td>" + val.MaterialCode + "</td><td>" + val.MaterialTitle + "</td><td>" + val.MaterialGroupName + "</td><td>" + val.MinInventory + "</td><td>" + val.Count + "</td><td>" + val.Status + "</td></tr>";
+                    $("#list").append(item);
+
+                });
+            }
+        });
+    });
+
+</script>
+

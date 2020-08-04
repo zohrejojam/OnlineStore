@@ -1,15 +1,25 @@
-﻿using System.Data;
-using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using OnlineStore.DataLayer;
-using OnlineStore.Models;
+using System.Threading.Tasks;
+using OnlineStoreCore.IServices;
+using OnlineStoreCore.DataLayer;
+using OnlineStoreCore.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace OnlineStore.Controllers
+namespace OnlineStoreCore.Services
 {
-    public class AccountingDocumentsController : ApiController
+    public class AccountingDocumentService : IAccountingDocument
     {
-        private DataBaseContext db = new DataBaseContext();
+        private DataBaseContext DbContext;
+        public AccountingDocumentService(DataBaseContext context)
+        {
+            DbContext = context;
+        }
+        public string CreateDocumentNumber()
+        {
+            return DateTime.Now.ToString("yyyyMMdd") + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
+        }
 
         /// <summary>
         /// فهرست موجودی انبار
@@ -19,60 +29,58 @@ namespace OnlineStore.Controllers
         /// <param name="filterStr">رشته برای فیلتر</param>
         /// <param name="SortcolumnName">رشته برای سورت ستون ها</param>
         /// <returns></returns>
-        //[System.Web.Http.HttpGet]
-        // GET: api/AccountingDocuments
-        [System.Web.Http.HttpGet]
-        public IQueryable<ListOfMaterial> StoreHouseInventory(int? page,  int? count,string filterString, string SortcolumnName)
+       
+        public IQueryable<ListOfMaterial> StoreHouseInventory(int? page, int? count, string filterString, string SortColumnName)
         {
             var takePage = page ?? 1;
             var takeCount = count ?? 5;
-            
-            var query = db.StoreHouses.Include(p => p.Material).Include(p => p.Material.MaterialGroup);
-            
-             var result = query
-                .Select(p => new ListOfMaterial
-                {
-                    MaterialId = p.MaterialId,
-                    MaterialCode = p.Material.MaterialCode,
-                    MaterialTitle = p.Material.MaterialTitle,
-                    MaterialGroupName = p.Material.MaterialGroup.MaterialGroupName,
-                    MinInventory = p.Material.MinInventory,
-                    Count = p.Count,
-                    Status = p.Count == 0 ? "ناموجود" : (p.Count <= p.Material.MinInventory ? "آماده سفارش" : "عادی")
 
-                })
-                //For Paging
-                .OrderBy(p => p.MaterialId)
-                .Skip((takePage - 1) * takeCount)
-                  .Take(takeCount);
+            var query = DbContext.StoreHouses.Include(p => p.Material).Include(p => p.Material.MaterialGroup);
+
+            var result = query
+               .Select(p => new ListOfMaterial
+               {
+                   MaterialId = p.MaterialId,
+                   MaterialCode = p.Material.MaterialCode,
+                   MaterialTitle = p.Material.MaterialTitle,
+                   MaterialGroupName = p.Material.MaterialGroup.MaterialGroupName,
+                   MinInventory = p.Material.MinInventory,
+                   Count = p.Count,
+                   Status = p.Count == 0 ? "ناموجود" : (p.Count <= p.Material.MinInventory ? "آماده سفارش" : "عادی")
+
+               })
+               //For Paging
+               .OrderBy(p => p.MaterialId)
+               .Skip((takePage - 1) * takeCount)
+                 .Take(takeCount);
             //for sort
             result = this.FilterList(result, filterString);
-            result = this.SortList(result, SortcolumnName);
+            result = this.SortList(result, SortColumnName);
             return result;
-               
+
         }
 
-        public IQueryable<ListOfMaterial> FilterList(IQueryable<ListOfMaterial> query,string filterString)
+        public IQueryable<ListOfMaterial> FilterList(IQueryable<ListOfMaterial> query, string filterString)
         {
             filterString = filterString != "" && filterString != null ? filterString.ToLower().Trim() : "";
             //for filter
             if (filterString != "" && filterString != null)
             {
-                 query = query.Where(p => p.MaterialCode.ToLower().Contains(filterString) ||
-                                     p.MaterialTitle.ToLower().Contains(filterString) ||
-                                     p.MaterialGroupName.ToLower().Contains(filterString) ||
-                                     p.MinInventory.ToString() == filterString ||
-                                     p.Count.ToString() == filterString);
+                query = query.Where(p => p.MaterialCode.ToLower().Contains(filterString) ||
+                                    p.MaterialTitle.ToLower().Contains(filterString) ||
+                                    p.MaterialGroupName.ToLower().Contains(filterString) ||
+                                    p.MinInventory.ToString() == filterString ||
+                                    p.Count.ToString() == filterString);
             }
             return query;
         }
 
-        public IQueryable<ListOfMaterial> SortList(IQueryable<ListOfMaterial> query, string SortcolumnName)
+        public IQueryable<ListOfMaterial> SortList(IQueryable<ListOfMaterial> query, string SortColumnName)
         {
-            SortcolumnName = SortcolumnName != "" && SortcolumnName != null ? SortcolumnName.ToLower().Trim() : "";
-            if (SortcolumnName != "" && SortcolumnName != null)
+            SortColumnName = SortColumnName != "" && SortColumnName != null ? SortColumnName.ToLower().Trim() : "";
+            if (SortColumnName != "" && SortColumnName != null)
             {
-                string[] sortList = SortcolumnName.Split(',');
+                string[] sortList = SortColumnName.Split(',');
                 foreach (string item in sortList)
                 {
                     switch (item)
