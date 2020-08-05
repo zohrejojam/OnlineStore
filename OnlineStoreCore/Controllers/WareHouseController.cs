@@ -11,20 +11,21 @@ namespace OnlineStoreCore.Controllers
 {
     [Route("api/StoreHouse")]
     [ApiController]
-    public class StoreHouseController : ControllerBase
+    public class WareHouseController : ControllerBase
     {
-        private StoreHouseService _service;
-        public StoreHouseController(StoreHouseService service)
+        private readonly WarehouseService _service;
+
+        public WareHouseController(WarehouseService service)
         {
             _service = service;
         }
 
-        public IQueryable<StoreHouse> GetStoreHouses()
+        public IQueryable<Warehouse> Get()
         {
-            return _service.GetStoreHouses();
+            return _service.Get();
         }
 
-        public void RegistrationMaterialIntoStoreHouse([FromBody]StoreHouse storeHouse)
+        public void RegistrationMaterialIntoStoreHouse([FromBody]Warehouse storeHouse)
         {
             _service.RegistrationMaterialIntoStoreHouse(storeHouse);
         }

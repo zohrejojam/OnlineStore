@@ -1,35 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using OnlineStoreCore.IServices;
 using OnlineStoreCore.DataLayer;
-using Microsoft.EntityFrameworkCore;
 using OnlineStoreCore.Models;
-using Microsoft.AspNetCore.Mvc;
+using OnlineStoreCore.Resources;
 
 namespace OnlineStoreCore.Services
 {
-    public class MaterialService : IMaterialService
+    public class ProductService : IMaterialService
     {
-        private DataBaseContext DbContext;
-        public MaterialService(DataBaseContext context)
+        private readonly DataBaseContext DbContext;
+
+        public ProductService(DataBaseContext context)
         {
             DbContext = context;
         }
 
-        /// <summary>
-        /// تعریف کالا
-        /// </summary>
-        /// <param name="material">کالا</param>
-        /// <returns></returns>
-        public void DefinitionMaterial(Material material)
+        public void Add(Product material)
         {
             try
             {
-                //validation
                 #region Uniqe Material Code
-                bool isExistCode = this.IsUniqueCode(material.MaterialCode);
+                bool isExistCode = this.IsUniqueCode(material.Code);
                 if (isExistCode)
                 {
                     throw new Exception(Messages.MaterialCodeMustBeUniqe);
@@ -37,16 +29,15 @@ namespace OnlineStoreCore.Services
                 #endregion
 
                 #region Uniqe Material Title In Group
-                bool isExistTitleInGroup = this.IsUniqueTitleInGroup(material.MaterialTitle, material.MaterialGroupId);
+                bool isExistTitleInGroup = this.IsUniqueTitleInGroup(material.Title, material.GroupId);
                 if (isExistTitleInGroup)
                 {
                     throw new Exception(Messages.MaterialTitleInGroupMustBeUniqe);
                 }
                 #endregion
 
-                DbContext.Materials.Add(material);
+                DbContext.Products.Add(material);
                 DbContext.SaveChanges();
-
             }
             catch (System.Exception)
             {
@@ -54,25 +45,23 @@ namespace OnlineStoreCore.Services
             }
         }
 
-
-        // GET: api/Materials
-        public IQueryable<Material> GetMaterials()
+        public IQueryable<Product> Get()
         {
-            return DbContext.Materials;
+            return DbContext.Products;
         }
 
         #region Unique MaterialCode and TiltleInGroup
         public bool IsUniqueCode(string code)
         {
             //یکتا بودن کد کالا
-            return DbContext.Materials.Any(p => p.MaterialCode == code);
+            return DbContext.Products.Any(p => p.Code == code);
         }
 
         public bool IsUniqueTitleInGroup(string title, int groupId)
         {
             //یکتا بودن عنوان کالا در هر گروه
-            return DbContext.Materials.Any(p => p.MaterialGroupId == groupId &&
-                                          p.MaterialTitle == title);
+            return DbContext.Products.Any(p => p.GroupId == groupId &&
+                                                p.Title == title);
         }
         #endregion
     }

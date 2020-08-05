@@ -13,19 +13,20 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class SalesInvoiceController : ControllerBase
     {
-        private SalesInvoiceService _service;
+        private readonly SalesInvoiceService _service;
+
         public SalesInvoiceController(SalesInvoiceService service)
         {
             _service = service;
         }
-        public void CreateSalesInvoice([FromBody]SalesInvoice salesInvoice)
+        public void Add([FromBody]SalesInvoice salesInvoice)
         {
-            _service.CreateSalesInvoice(salesInvoice);
+            _service.Add(salesInvoice);
         }
 
-        public IQueryable<SalesInvoice> GetSalesInvoices()
+        public IQueryable<SalesInvoice> Get()
         {
-            return _service.GetSalesInvoices();
+            return _service.Get();
         }
 
         public bool DecreaseMaterialCount(int storeHouseId, int salesInvoiceNumber)

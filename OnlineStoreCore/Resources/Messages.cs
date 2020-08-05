@@ -1,4 +1,4 @@
-﻿namespace OnlineStoreCore.Models
+﻿namespace OnlineStoreCore.Resources
 {
     public class Messages
     {

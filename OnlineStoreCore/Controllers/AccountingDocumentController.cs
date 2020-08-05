@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnlineStoreCore.IServices;
 using OnlineStoreCore.Models;
 using OnlineStoreCore.Services;
 
@@ -13,24 +14,16 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class AccountingDocumentController : ControllerBase
     {
-        private AccountingDocumentService _service;
+        private readonly AccountingDocumentService _service;
+
         public AccountingDocumentController(AccountingDocumentService service)
         {
             _service = service;
         }
-        public IQueryable<ListOfMaterial> StoreHouseInventory(int? page, int? count, string filterString, string SortColumnName)
-        {
-            return _service.StoreHouseInventory(page, count, filterString, SortColumnName);
-        }
 
-        public IQueryable<ListOfMaterial> FilterList(IQueryable<ListOfMaterial> query, string filterString)
+        public IQueryable<MaterialListDto> GetStoreHouseInventory(int? page, int? count, string filterString, string sortColumnName)
         {
-            return _service.FilterList(query, filterString);
-        }
-
-        public IQueryable<ListOfMaterial> SortList(IQueryable<ListOfMaterial> query, string SortColumnName)
-        {
-            return _service.SortList(query, SortColumnName);
+            return _service.GetStoreHouseInventory(page, count, filterString, sortColumnName);
         }
     }
 }

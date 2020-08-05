@@ -11,21 +11,22 @@ namespace OnlineStoreCore.Controllers
 {
     [Route("api/MaterialGroups")]
     [ApiController]
-    public class MaterialGroupsController : ControllerBase
+    public class ProductGroupsController : ControllerBase
     {
-        private MaterialGroupService _service;
-        public MaterialGroupsController(MaterialGroupService service)
+        private readonly ProductGroupService _service;
+
+        public ProductGroupsController(ProductGroupService service)
         {
             _service = service;
         }
-        public IQueryable<MaterialGroup> GetMaterialGroups()
+        public IQueryable<ProductGroup> Get()
         {
-            return _service.GetMaterialGroups();
+            return _service.Get();
         }
 
-        public void AddMaterialGroup(MaterialGroup materialGroup)
+        public void Add(ProductGroup materialGroup)
         {
-            _service.AddMaterialGroup(materialGroup);
+            _service.Add(materialGroup);
         }
     }
 }

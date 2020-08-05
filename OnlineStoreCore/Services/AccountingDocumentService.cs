@@ -1,69 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using OnlineStoreCore.IServices;
 using OnlineStoreCore.DataLayer;
-using OnlineStoreCore.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStoreCore.Services
 {
-    public class AccountingDocumentService : IAccountingDocument
+    public class AccountingDocumentService : IAccountingDocumentService
     {
-        private DataBaseContext DbContext;
+        private readonly DataBaseContext DbContext;
         public AccountingDocumentService(DataBaseContext context)
         {
             DbContext = context;
         }
         public string CreateDocumentNumber()
         {
-            return DateTime.Now.ToString("yyyyMMdd") + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString();
+            return DateTime.Now.ToString("yyyyMMdd") + 
+                   DateTime.Now.Hour.ToString() + 
+                   DateTime.Now.Minute.ToString() + 
+                   DateTime.Now.Second.ToString();
         }
 
-        /// <summary>
-        /// فهرست موجودی انبار
-        /// </summary>
-        /// <param name="page">صفحه ی چند</param>
-        /// <param name="count">چه تعداد رکورد در یک صفحه</param>
-        /// <param name="filterStr">رشته برای فیلتر</param>
-        /// <param name="SortcolumnName">رشته برای سورت ستون ها</param>
-        /// <returns></returns>
-       
-        public IQueryable<ListOfMaterial> StoreHouseInventory(int? page, int? count, string filterString, string SortColumnName)
+        public IQueryable<MaterialListDto> GetStoreHouseInventory(int? page, int? count, string filter, string sortColumns)
         {
             var takePage = page ?? 1;
             var takeCount = count ?? 5;
 
-            var query = DbContext.StoreHouses.Include(p => p.Material).Include(p => p.Material.MaterialGroup);
+            var query = DbContext.Products.Include(p=>p.Warehouse);
 
             var result = query
-               .Select(p => new ListOfMaterial
+               .Select(p => new MaterialListDto
                {
-                   MaterialId = p.MaterialId,
-                   MaterialCode = p.Material.MaterialCode,
-                   MaterialTitle = p.Material.MaterialTitle,
-                   MaterialGroupName = p.Material.MaterialGroup.MaterialGroupName,
-                   MinInventory = p.Material.MinInventory,
-                   Count = p.Count,
-                   Status = p.Count == 0 ? "ناموجود" : (p.Count <= p.Material.MinInventory ? "آماده سفارش" : "عادی")
+                   Id = p.WareHouseId,
+                   MaterialCode = p.Code,
+                   MaterialTitle = p.Title,
+                   MaterialGroupName = p.Group.Name,
+                   MinInventory = p.MinimumInventory,
+                   Count = p.Warehouse.Count,
+                   Status = p.Warehouse.Count == 0 ? "ناموجود" : (p.Warehouse.Count <= p.MinimumInventory ? "آماده سفارش" : "عادی")
 
                })
-               //For Paging
-               .OrderBy(p => p.MaterialId)
+               .OrderBy(p => p.Id)
                .Skip((takePage - 1) * takeCount)
                  .Take(takeCount);
-            //for sort
-            result = this.FilterList(result, filterString);
-            result = this.SortList(result, SortColumnName);
+            result = this.FilterList(result, filter);
+            result = this.SortList(result, sortColumns);
             return result;
 
         }
 
-        public IQueryable<ListOfMaterial> FilterList(IQueryable<ListOfMaterial> query, string filterString)
+        public IQueryable<MaterialListDto> FilterList(IQueryable<MaterialListDto> query, string filterString)
         {
             filterString = filterString != "" && filterString != null ? filterString.ToLower().Trim() : "";
-            //for filter
             if (filterString != "" && filterString != null)
             {
                 query = query.Where(p => p.MaterialCode.ToLower().Contains(filterString) ||
@@ -75,7 +63,7 @@ namespace OnlineStoreCore.Services
             return query;
         }
 
-        public IQueryable<ListOfMaterial> SortList(IQueryable<ListOfMaterial> query, string SortColumnName)
+        public IQueryable<MaterialListDto> SortList(IQueryable<MaterialListDto> query, string SortColumnName)
         {
             SortColumnName = SortColumnName != "" && SortColumnName != null ? SortColumnName.ToLower().Trim() : "";
             if (SortColumnName != "" && SortColumnName != null)

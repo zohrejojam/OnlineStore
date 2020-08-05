@@ -1,31 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using OnlineStoreCore.DataLayer;
 using OnlineStoreCore.Models;
+using OnlineStoreCore.Resources;
 
 namespace OnlineStoreCore.Services
 {
-    public class MaterialGroupService
+    public class ProductGroupService
     {
-        private DataBaseContext DbContext;
-        public MaterialGroupService(DataBaseContext context)
+        private readonly DataBaseContext DbContext;
+        public ProductGroupService(DataBaseContext context)
         {
             DbContext = context;
         }
        
-        public IQueryable<MaterialGroup> GetMaterialGroups()
+        public IQueryable<ProductGroup> Get()
         {
-            return DbContext.MaterialGroups;
+            return DbContext.ProductGroups;
         }
-
         
-        public void AddMaterialGroup(MaterialGroup materialGroup)
+        public void Add(ProductGroup materialGroup)
         {
             try
             {
-                DbContext.MaterialGroups.Add(materialGroup);
+                DbContext.ProductGroups.Add(materialGroup);
                 DbContext.SaveChanges();
             }
             catch (System.Exception)

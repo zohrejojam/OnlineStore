@@ -19,9 +19,8 @@ namespace OnlineStore.Controllers
         /// <param name="filterStr">رشته برای فیلتر</param>
         /// <param name="SortcolumnName">رشته برای سورت ستون ها</param>
         /// <returns></returns>
-        //[System.Web.Http.HttpGet]
-        // GET: api/AccountingDocuments
-        [System.Web.Http.HttpGet]
+       // Get: api/AccountingDocuments
+        [HttpGet]
         public IQueryable<ListOfMaterial> StoreHouseInventory(int? page,  int? count,string filterString, string SortcolumnName)
         {
             var takePage = page ?? 1;

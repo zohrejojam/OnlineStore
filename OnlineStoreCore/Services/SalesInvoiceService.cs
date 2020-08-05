@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using OnlineStoreCore.DataLayer;
 using OnlineStoreCore.Models;
+using OnlineStoreCore.Resources;
 
 namespace OnlineStoreCore.Services
 {
     public class SalesInvoiceService
     {
-        private DataBaseContext DbContext;
-        private AccountingDocumentService _documentService;
+        private readonly DataBaseContext DbContext;
+        private readonly AccountingDocumentService _documentService;
         public SalesInvoiceService(DataBaseContext context,AccountingDocumentService documentService)
         {
             DbContext = context;
@@ -25,7 +24,7 @@ namespace OnlineStoreCore.Services
         /// <param name="salesInvoice"></param>
         /// <returns></returns>
        
-        public void CreateSalesInvoice(SalesInvoice salesInvoice)
+        public void Add(SalesInvoice salesInvoice)
         {
             using (TransactionScope transScope = new TransactionScope())
             {
@@ -33,11 +32,11 @@ namespace OnlineStoreCore.Services
                 {
                     int minInventory = 0;
                     //بدست آوردن حداقل موجودی برای این کالا
-                    StoreHouse currentStoreHouse = DbContext.StoreHouses.FirstOrDefault(p => p.StoreHouseId == salesInvoice.StoreHouseId);
-                    if (currentStoreHouse != null)
+                    Warehouse currentWareHouse = DbContext.Warehouses.FirstOrDefault(p => p.Id == salesInvoice.WarehouseId);
+                    if (currentWareHouse != null)
                     {
-                        Material currentMaterial = DbContext.Materials.FirstOrDefault(p => p.MaterialId == currentStoreHouse.MaterialId);
-                        minInventory = currentMaterial != null ? currentMaterial.MinInventory : 0;
+                        Product currentMaterial = DbContext.Products.FirstOrDefault(p => p.Id == currentWareHouse.Id);
+                        minInventory = currentMaterial != null ? currentMaterial.MinimumInventory : 0;
                     }
 
                     //تعداد کالا بیشتر از حداقل موجودی نباشد
@@ -51,7 +50,7 @@ namespace OnlineStoreCore.Services
 
                     #region Decrease Material Number
                     //کسر کردن تعداد کالای فروخته شده از انبار
-                    bool decreeseSuccessed = this.DecreaseMaterialCount(salesInvoice.StoreHouseId, salesInvoice.Count);
+                    bool decreeseSuccessed = this.DecreaseMaterialCount(salesInvoice.WarehouseId, salesInvoice.Count);
                     if (!decreeseSuccessed)
                     {
                         transScope.Dispose();
@@ -62,7 +61,7 @@ namespace OnlineStoreCore.Services
                     #region Save Accounting Document Automatically
                     //ثبت سند حسابداری
                     bool createDocumentSuccessed = this.RegistrationAccountingDocument(salesInvoice.Date,
-                        salesInvoice.Amount, salesInvoice.Count, salesInvoice.SalesInvoiceId);
+                        salesInvoice.Amount, salesInvoice.Count, salesInvoice.Id);
 
                     if (!createDocumentSuccessed)
                     {
@@ -73,7 +72,7 @@ namespace OnlineStoreCore.Services
 
                     transScope.Complete();
                 }
-                catch (TransactionException e)
+                catch (TransactionException)
                 {
                     transScope.Dispose();
                     throw new Exception(Messages.ErrorOccured);
@@ -87,7 +86,7 @@ namespace OnlineStoreCore.Services
         /// </summary>
         /// <returns></returns>
         // GET: api/SalesInvoices
-        public IQueryable<SalesInvoice> GetSalesInvoices()
+        public IQueryable<SalesInvoice> Get()
         {
             return DbContext.SalesInvoices;
         }
@@ -102,7 +101,7 @@ namespace OnlineStoreCore.Services
         {
             try
             {
-                StoreHouse currentStoreHouse = DbContext.StoreHouses.Find(storeHouseId);
+                Warehouse currentStoreHouse = DbContext.Warehouses.Find(storeHouseId);
                 //اگر کالای موجود در انبار کمتر از مقدار سفارش باشد
                 if (currentStoreHouse.Count < salesInvoiceNumber)
                     return false;
@@ -133,8 +132,8 @@ namespace OnlineStoreCore.Services
             try
             {
                 AccountingDocument obj = new AccountingDocument();
-                obj.DocumentDate = date;
-                obj.DocumentNumber = _documentService.CreateDocumentNumber();//شماره سند
+                obj.Date = date;
+                obj.Number = _documentService.CreateDocumentNumber();//شماره سند
                 obj.Amount = salesInvoiceAmount * salesInvoiceNumber;
                 obj.SalesInvoiceId = salesInvoiceId;
 

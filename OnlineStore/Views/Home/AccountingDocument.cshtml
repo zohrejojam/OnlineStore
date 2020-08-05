@@ -28,7 +28,7 @@
             url: "/Api/AccountingDocuments/",
             type: "Get",
             dataType: "JSON",
-            data: { page: 1, count: 4, filterStr: "", SortcolumnName:"MaterialCode,Count_desc"},
+            data: { page: 1, count: 4, filterString: "", SortcolumnName:"MaterialCode,Count_desc"},
             success: function (response) {
                 debugger;
                 $.each(response, function (key, val) {
