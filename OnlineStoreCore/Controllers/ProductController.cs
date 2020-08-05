@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using OnlineStoreCore.IServices;
 using OnlineStoreCore.Models;
-using OnlineStoreCore.Services;
 
 namespace OnlineStoreCore.Controllers
 {
@@ -13,9 +9,9 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService _service;
+        private readonly IProductService _service;
 
-        public ProductController(ProductService service)
+        public ProductController(IProductService service)
         {
             _service = service;
         }
@@ -26,7 +22,7 @@ namespace OnlineStoreCore.Controllers
             _service.Add(material);
         }
 
-        public IQueryable<Product> Get()
+        public IList<Product> Get()
         {
             return _service.Get();
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStoreCore.Models;
 using OnlineStoreCore.Services;
@@ -11,16 +7,16 @@ namespace OnlineStoreCore.Controllers
 {
     [Route("api/StoreHouse")]
     [ApiController]
-    public class WareHouseController : ControllerBase
+    public class WarehouseController : ControllerBase
     {
-        private readonly WarehouseService _service;
+        private readonly IWarehouseService _service;
 
-        public WareHouseController(WarehouseService service)
+        public WarehouseController(IWarehouseService service)
         {
             _service = service;
         }
 
-        public IQueryable<Warehouse> Get()
+        public IList<Warehouse> Get()
         {
             return _service.Get();
         }

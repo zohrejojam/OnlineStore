@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,6 @@ namespace OnlineStoreCore.Services
             _documentService = documentService;
         }
 
-        /// <summary>
-        /// فروش کالا و ثبت فاکتور فروش
-        /// </summary>
-        /// <param name="salesInvoice"></param>
-        /// <returns></returns>
-       
         public void Add(SalesInvoice salesInvoice)
         {
             using (TransactionScope transScope = new TransactionScope())
@@ -81,22 +76,11 @@ namespace OnlineStoreCore.Services
             }
         }
 
-        /// <summary>
-        /// گرفتن اطلاعات فروش
-        /// </summary>
-        /// <returns></returns>
-        // GET: api/SalesInvoices
-        public IQueryable<SalesInvoice> Get()
+        public IList<SalesInvoice> Get()
         {
-            return DbContext.SalesInvoices;
+            return DbContext.SalesInvoices.ToList();
         }
 
-        /// <summary>
-        /// کسر کردن تعداد کالای انبار هنگام فروش
-        /// </summary>
-        /// <param name="storeHouseId">آی دی انبار</param>
-        /// <param name="salesInvoiceNumber">تعداد کالای فروش رفته</param>
-        /// <returns></returns>
         public bool DecreaseMaterialCount(int storeHouseId, int salesInvoiceNumber)
         {
             try
@@ -119,14 +103,6 @@ namespace OnlineStoreCore.Services
             }
         }
 
-        /// <summary>
-        /// ثبت سند حسابداری
-        /// </summary>
-        /// <param name="date">تاریخ سند</param>
-        /// <param name="salesInvoiceAmount">مبلغ یک کالا</param>
-        /// <param name="salesInvoiceNumber">تعداد کالا</param>
-        /// <param name="salesInvoiceId">شماره فاکتور فروش</param>
-        /// <returns></returns>
         public bool RegistrationAccountingDocument(DateTime date, decimal salesInvoiceAmount, int salesInvoiceNumber, int salesInvoiceId)
         {
             try

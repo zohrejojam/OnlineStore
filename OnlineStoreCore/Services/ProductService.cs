@@ -4,10 +4,12 @@ using OnlineStoreCore.IServices;
 using OnlineStoreCore.DataLayer;
 using OnlineStoreCore.Models;
 using OnlineStoreCore.Resources;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace OnlineStoreCore.Services
 {
-    public class ProductService : IMaterialService
+    public class ProductService : IProductService
     {
         private readonly DataBaseContext DbContext;
 
@@ -45,9 +47,9 @@ namespace OnlineStoreCore.Services
             }
         }
 
-        public IQueryable<Product> Get()
+        public IList<Product> Get()
         {
-            return DbContext.Products;
+            return DbContext.Products.ToList();
         }
 
         #region Unique MaterialCode and TiltleInGroup

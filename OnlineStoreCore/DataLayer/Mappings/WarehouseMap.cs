@@ -20,7 +20,6 @@ namespace OnlineStoreCore.DataLayer.Mappings
             builder.Property(p => p.Date)
                 .IsRequired()
                 .HasColumnType("DateTime");
-
         }
     }
 }

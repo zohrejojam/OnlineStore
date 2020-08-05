@@ -1,14 +1,13 @@
-﻿using System;
+﻿using OnlineStoreCore.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnlineStoreCore.IServices
 {
-    public interface IMaterialService
+    public interface IProductService
     {
         bool IsUniqueCode(string code);
         bool IsUniqueTitleInGroup(string title, int groupId);
+        void Add(Product material);
+        IList<Product> Get();
     }
 }

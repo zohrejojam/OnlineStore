@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStoreCore.Models;
 using OnlineStoreCore.Services;
@@ -13,13 +9,13 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class ProductGroupsController : ControllerBase
     {
-        private readonly ProductGroupService _service;
+        private readonly IProductGroupService _service;
 
-        public ProductGroupsController(ProductGroupService service)
+        public ProductGroupsController(IProductGroupService service)
         {
             _service = service;
         }
-        public IQueryable<ProductGroup> Get()
+        public IList<ProductGroup> Get()
         {
             return _service.Get();
         }

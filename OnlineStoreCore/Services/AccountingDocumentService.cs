@@ -3,6 +3,7 @@ using System.Linq;
 using OnlineStoreCore.IServices;
 using OnlineStoreCore.DataLayer;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace OnlineStoreCore.Services
 {
@@ -21,14 +22,14 @@ namespace OnlineStoreCore.Services
                    DateTime.Now.Second.ToString();
         }
 
-        public IQueryable<MaterialListDto> GetStoreHouseInventory(int? page, int? count, string filter, string sortColumns)
+        public IList<MaterialListDto> GetStoreHouseInventory(int? page, int? count, string filter, string sortColumns)
         {
             var takePage = page ?? 1;
             var takeCount = count ?? 5;
 
             var query = DbContext.Products.Include(p=>p.Warehouse);
 
-            var result = query
+            List<MaterialListDto> result = query
                .Select(p => new MaterialListDto
                {
                    Id = p.WareHouseId,
@@ -42,28 +43,29 @@ namespace OnlineStoreCore.Services
                })
                .OrderBy(p => p.Id)
                .Skip((takePage - 1) * takeCount)
-                 .Take(takeCount);
+                 .Take(takeCount).ToList();
             result = this.FilterList(result, filter);
             result = this.SortList(result, sortColumns);
-            return result;
+            return result.ToList();
 
         }
 
-        public IQueryable<MaterialListDto> FilterList(IQueryable<MaterialListDto> query, string filterString)
+        public List<MaterialListDto> FilterList(List<MaterialListDto> query, string filterString)
         {
+            List<MaterialListDto> result=new List<MaterialListDto>();
             filterString = filterString != "" && filterString != null ? filterString.ToLower().Trim() : "";
             if (filterString != "" && filterString != null)
             {
-                query = query.Where(p => p.MaterialCode.ToLower().Contains(filterString) ||
+                result = query.Where(p => p.MaterialCode.ToLower().Contains(filterString) ||
                                     p.MaterialTitle.ToLower().Contains(filterString) ||
                                     p.MaterialGroupName.ToLower().Contains(filterString) ||
                                     p.MinInventory.ToString() == filterString ||
-                                    p.Count.ToString() == filterString);
+                                    p.Count.ToString() == filterString).ToList();
             }
-            return query;
+            return result;
         }
 
-        public IQueryable<MaterialListDto> SortList(IQueryable<MaterialListDto> query, string SortColumnName)
+        public List<MaterialListDto> SortList(List<MaterialListDto> query, string SortColumnName)
         {
             SortColumnName = SortColumnName != "" && SortColumnName != null ? SortColumnName.ToLower().Trim() : "";
             if (SortColumnName != "" && SortColumnName != null)
@@ -74,50 +76,50 @@ namespace OnlineStoreCore.Services
                     switch (item)
                     {
                         case "materialcode":
-                            query = query.OrderBy(p => p.MaterialCode);
+                            query = query.OrderBy(p => p.MaterialCode).ToList();
                             break;
 
                         case "materialcode_desc":
-                            query = query.OrderByDescending(p => p.MaterialCode);
+                            query = query.OrderByDescending(p => p.MaterialCode).ToList();
                             break;
 
                         case "materialtitle":
-                            query = query.OrderBy(p => p.MaterialTitle);
+                            query = query.OrderBy(p => p.MaterialTitle).ToList();
                             break;
 
                         case "materialtitle_desc":
-                            query = query.OrderByDescending(p => p.MaterialTitle);
+                            query = query.OrderByDescending(p => p.MaterialTitle).ToList();
                             break;
 
                         case "materialgroupname":
-                            query = query.OrderBy(p => p.MaterialGroupName);
+                            query = query.OrderBy(p => p.MaterialGroupName).ToList();
                             break;
 
                         case "materialgroupname_desc":
-                            query = query.OrderByDescending(p => p.MaterialGroupName);
+                            query = query.OrderByDescending(p => p.MaterialGroupName).ToList();
                             break;
 
                         case "mininventory":
-                            query = query.OrderBy(p => p.MinInventory);
+                            query = query.OrderBy(p => p.MinInventory).ToList();
                             break;
 
                         case "mininventory_desc":
-                            query = query.OrderByDescending(p => p.MinInventory);
+                            query = query.OrderByDescending(p => p.MinInventory).ToList();
                             break;
 
                         case "count":
-                            query = query.OrderBy(p => p.Count);
+                            query = query.OrderBy(p => p.Count).ToList();
                             break;
 
                         case "count_desc":
-                            query = query.OrderByDescending(p => p.Count);
+                            query = query.OrderByDescending(p => p.Count).ToList();
                             break;
                         default:
                             break;
                     }
                 }
             }
-            return query;
+            return query.ToList();
         }
 
     }

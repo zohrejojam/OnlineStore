@@ -2,6 +2,7 @@
 using OnlineStoreCore.Models;
 using OnlineStoreCore.Resources;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OnlineStoreCore.Services
@@ -14,9 +15,9 @@ namespace OnlineStoreCore.Services
             DbContext = context;
         }
 
-        public IQueryable<Warehouse> Get()
+        public IList<Warehouse> Get()
         {
-            return DbContext.Warehouses;
+            return DbContext.Warehouses.ToList();
         }
 
         public void RegistrationMaterialIntoStoreHouse(Warehouse storeHouse)
