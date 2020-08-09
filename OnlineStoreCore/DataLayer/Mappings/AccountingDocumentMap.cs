@@ -20,7 +20,7 @@ namespace OnlineStoreCore.DataLayer.Mappings
 
             builder.Property(p => p.Amount)
                 .IsRequired()
-                .HasColumnType("decimal(5,2)");
+                .HasColumnType("decimal(18,2)");
 
             builder.HasOne<SalesInvoice>(p => p.SalesInvoice)
                 .WithMany(p => p.AccountingDocuments)

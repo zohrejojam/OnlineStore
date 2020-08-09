@@ -9,22 +9,22 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _service;
+        private readonly IProductService _productService;
 
-        public ProductController(IProductService service)
+        public ProductController(IProductService productService)
         {
-            _service = service;
+            _productService = productService;
         }
        
         [HttpPost]
         public void Add([FromBody]Product material)
         {
-            _service.Add(material);
+            _productService.Add(material);
         }
 
         public IList<Product> Get()
         {
-            return _service.Get();
+            return _productService.Get();
         }
     }
 }

@@ -9,20 +9,20 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class ProductGroupsController : ControllerBase
     {
-        private readonly IProductGroupService _service;
+        private readonly IProductGroupService _productGroupService;
 
-        public ProductGroupsController(IProductGroupService service)
+        public ProductGroupsController(IProductGroupService productGroupService)
         {
-            _service = service;
+            _productGroupService = productGroupService;
         }
         public IList<ProductGroup> Get()
         {
-            return _service.Get();
+            return _productGroupService.Get();
         }
 
         public void Add(ProductGroup materialGroup)
         {
-            _service.Add(materialGroup);
+            _productGroupService.Add(materialGroup);
         }
     }
 }

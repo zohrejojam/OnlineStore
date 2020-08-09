@@ -12,6 +12,7 @@ namespace OnlineStoreCore.DataLayer.Mappings
 
             builder.Property(p => p.Name)
                 .IsRequired()
+                .HasColumnType("nvarchar")
                 .HasMaxLength(200);
         }
     }

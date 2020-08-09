@@ -9,10 +9,11 @@ using OnlineStoreCore.Resources;
 
 namespace OnlineStoreCore.Services
 {
-    public class SalesInvoiceService
+    public class SalesInvoiceService:ISalesInvoiceService
     {
         private readonly DataBaseContext DbContext;
         private readonly AccountingDocumentService _documentService;
+
         public SalesInvoiceService(DataBaseContext context,AccountingDocumentService documentService)
         {
             DbContext = context;

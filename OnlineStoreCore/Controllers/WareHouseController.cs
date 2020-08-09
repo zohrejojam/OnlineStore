@@ -9,21 +9,21 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class WarehouseController : ControllerBase
     {
-        private readonly IWarehouseService _service;
+        private readonly IWarehouseService _warehouseService;
 
-        public WarehouseController(IWarehouseService service)
+        public WarehouseController(IWarehouseService warehouseService)
         {
-            _service = service;
+            _warehouseService = warehouseService;
         }
 
         public IList<Warehouse> Get()
         {
-            return _service.Get();
+            return _warehouseService.Get();
         }
 
-        public void RegistrationMaterialIntoStoreHouse([FromBody]Warehouse storeHouse)
+        public void RegistrationMaterialIntoStoreHouse(Warehouse storeHouse)
         {
-            _service.RegistrationMaterialIntoStoreHouse(storeHouse);
+            _warehouseService.RegistrationMaterialIntoStoreHouse(storeHouse);
         }
     }
 }

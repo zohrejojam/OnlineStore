@@ -8,16 +8,16 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class AccountingDocumentController : ControllerBase
     {
-        private readonly IAccountingDocumentService _service;
+        private readonly IAccountingDocumentService _accountingDocumentService;
 
-        public AccountingDocumentController(IAccountingDocumentService service)
+        public AccountingDocumentController(IAccountingDocumentService accountingDocumentService)
         {
-            _service = service;
+            _accountingDocumentService = accountingDocumentService;
         }
 
         public IList<MaterialListDto> GetStoreHouseInventory(int? page, int? count, string filterString, string sortColumnName)
         {
-            return _service.GetStoreHouseInventory(page, count, filterString, sortColumnName);
+            return _accountingDocumentService.GetStoreHouseInventory(page, count, filterString, sortColumnName);
         }
     }
 }

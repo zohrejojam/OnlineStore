@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace OnlineStoreCore.Services
 {
-    public class WarehouseService
+    public class WarehouseService:IWarehouseService
     {
         private readonly DataBaseContext DbContext;
         public WarehouseService(DataBaseContext context)

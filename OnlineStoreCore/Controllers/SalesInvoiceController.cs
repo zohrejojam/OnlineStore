@@ -9,20 +9,20 @@ namespace OnlineStoreCore.Controllers
     [ApiController]
     public class SalesInvoiceController : ControllerBase
     {
-        private readonly ISalesInvoiceService _service;
+        private readonly ISalesInvoiceService _salesInvoiceService;
 
-        public SalesInvoiceController(ISalesInvoiceService service)
+        public SalesInvoiceController(ISalesInvoiceService salesInvoiceService)
         {
-            _service = service;
+            _salesInvoiceService = salesInvoiceService;
         }
         public void Add([FromBody]SalesInvoice salesInvoice)
         {
-            _service.Add(salesInvoice);
+            _salesInvoiceService.Add(salesInvoice);
         }
 
         public IList<SalesInvoice> Get()
         {
-            return _service.Get();
+            return _salesInvoiceService.Get();
         }
     }
 }

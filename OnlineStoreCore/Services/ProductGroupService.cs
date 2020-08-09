@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OnlineStoreCore.DataLayer;
 using OnlineStoreCore.Models;
@@ -6,7 +7,7 @@ using OnlineStoreCore.Resources;
 
 namespace OnlineStoreCore.Services
 {
-    public class ProductGroupService
+    public class ProductGroupService:IProductGroupService
     {
         private readonly DataBaseContext DbContext;
         public ProductGroupService(DataBaseContext context)
@@ -14,16 +15,16 @@ namespace OnlineStoreCore.Services
             DbContext = context;
         }
        
-        public IQueryable<ProductGroup> Get()
+        public IList<ProductGroup> Get()
         {
-            return DbContext.ProductGroups;
+            return DbContext.ProductGroups.ToList();
         }
         
-        public void Add(ProductGroup materialGroup)
+        public void Add(ProductGroup productGroup)
         {
             try
             {
-                DbContext.ProductGroups.Add(materialGroup);
+                DbContext.ProductGroups.Add(productGroup);
                 DbContext.SaveChanges();
             }
             catch (System.Exception)
